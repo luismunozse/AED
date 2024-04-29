@@ -13,3 +13,33 @@ desde un evento dado, y su programa deberá calcular la cantidad total de segund
 si los datos ingresados fuesen: horas = 4, minutos = 36 y segundos = 8 entonces el resultado a obtener es que la
 cantidad total de segundos es 16568.
 '''
+
+print('*'*50)
+print('Desafio01 - Muñoz Luis')
+print('*'*50)
+
+print('*'*50)
+print('Convirtiendo segundos en hh:mm:ss')
+print('*'*50)
+
+numero = int(input('Ingrese la cantidad de segundos a convertir: '))
+
+hora = numero //3600
+minutos = (numero % 3600)//60
+segundos = (numero % 3600)%60
+
+if(hora>24):
+    print('Excedido')
+else:
+    print('Tiempo transcurrido: ' + str(hora) + ':' + str(minutos) + ':' + str(segundos))
+
+print('*'*50)
+print('Convirtiendo el tiempo en hh:mm:ss a segundos')
+print('*'*50)
+
+h = int(input('Ingrese una hora: '))
+min = int(input('Ingrese los minutos: '))
+seg = int(input('Ingrese los segundos: '))
+
+seg_totales = (h*3600) + (min*60) + seg
+print('La cantidad total de segundos es: ' + str(seg_totales))
