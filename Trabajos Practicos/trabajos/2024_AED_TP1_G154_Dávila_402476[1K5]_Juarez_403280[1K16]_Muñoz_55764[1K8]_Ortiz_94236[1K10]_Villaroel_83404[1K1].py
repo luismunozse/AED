@@ -1,6 +1,3 @@
-letras = 'ABCDEFGHJKLMNPQRSTUVWXYZ'
-numeros = '0123456789'
-
 cp = input('Ingrese el CP de destino: ')
 direccion = input('Ingrese la direccion fisica de destino: ')
 tipo = int(input('Tipo de envio (entre 0 y 6): '))
@@ -11,13 +8,7 @@ importe_inicial = 0
 importe_final = 0
 montevideo = False
 
-if (len(cp) == 8
-        and
-        (cp[0] in letras)
-        and
-        (cp[1] in numeros and cp[2] in numeros and cp[3] in numeros and cp[4] in numeros)
-        and
-        cp[5] in letras and cp[6] in letras and cp[7] in letras):
+if len(cp) == 8 and (cp[0].isalpha() and cp[0] != 'I' and cp[0] != 'O') and cp[1:5].isdigit() and cp[5:8].isalpha():
     pais = 'Argentina'
     if cp[0] == 'A':
         provincia = 'Salta'
@@ -67,17 +58,15 @@ if (len(cp) == 8
         provincia = 'Jujuy'
     elif cp[0] == 'Z':
         provincia = 'Santa Cruz'
-elif len(cp) == 4 and cp[0] in numeros and cp[1] in numeros and cp[2] in numeros and cp[3] in numeros:
+elif len(cp) == 4 and cp.isdigit():
     pais = 'Bolivia'
-elif len(cp) == 9 and cp[0] in numeros and cp[1] in numeros and cp[2] in numeros and cp[3] in numeros and cp[4] in numeros\
-        and cp[5] == '-'\
-        and cp[6] in numeros and cp[7] in numeros and cp[8] in numeros:
+elif len(cp) == 9 and cp[0:5].isdigit() and cp[5] == '-' and cp[6:9]:
     pais = 'Brasil'
-elif len(cp) == 7 and cp[0] in numeros and cp[1] in numeros and cp[2] in numeros and cp[3] in numeros and cp[4] in numeros and cp[5] in numeros and cp[6] in numeros:
+elif len(cp) == 7 and cp.isdigit():
     pais = 'Chile'
-elif len(cp) == 6 and cp[0] in numeros and cp[1] in numeros and cp[2] in numeros and cp[3] in numeros and cp[4] in numeros and cp[5] in numeros:
+elif len(cp) == 6 and cp.isdigit():
     pais = 'Paraguay'
-elif len(cp) == 5 and cp[0] in numeros and cp[1] in numeros and cp[2] in numeros and cp[3] in numeros and cp[4] in numeros:
+elif len(cp) == 5 and cp.isdigit():
     pais = 'Uruguay'
     if cp[0] == '1':
         montevideo = True
