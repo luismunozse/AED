@@ -27,13 +27,20 @@ def obtener_direccion(linea):
     return direccion
 
 
-
 def validar_direccion_hc(direccion):
     print(direccion)
+    vino_mayus = False
     for car in direccion:
         if not (car.isalpha() or car.isdigit() or car == ' ' or car == '.'):
             return False
+        if car.isupper():
+            if vino_mayus:
+                return False
+            vino_mayus = True
+        else:
+            vino_mayus = False
     return True
+
 
 def principal():
     archivo = open(ARCHIVO, encoding='UTF-8')
@@ -48,13 +55,16 @@ def principal():
         linea_sin_final(linea)
         (cp, direccion, tipo, pago) = extraer_datos(linea)
         print(f'Código Postal: {cp} | Dirección: {direccion} | Tipo de Envío: {tipo} | Forma de Pago: {pago}')
-
-        if validar_direccion_hc(direccion):
+        if tipo_control == 'Hard Control':
+            if validar_direccion_hc(direccion):
+                r2 += 1
+            else:
+                print(f'Dirección inválida: {direccion}')
+                r3 += 1
+        if tipo_control == 'Soft Control':
             r2 += 1
-        else:
-            print(f'Dirección inválida: {direccion}')
-            r3 += 1
         linea = archivo.readline()
-    print(r2,r3)
+    print(f'Cantidad de direcciones válidas: {r2}')
+    print(f'Cantidad de direcciones inválidas: {r3}')
 
 principal()
