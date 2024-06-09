@@ -13,6 +13,31 @@ def get_tipo_control(linea):
     elif 'SC' in linea:
         return 'Soft Control'
 
+def validar_palabra(direccion):
+    es_numero = False
+    for char in direccion:
+        if char.isdigit():
+            es_numero = True
+        elif char == ' ' or char == '.':
+            if es_numero:
+                return True
+            continue
+    return False
+
+def validar_direccion(direccion):
+    print(direccion)
+    vino_mayus = False
+    for car in direccion:
+        if not (car.isalpha() or car.isdigit() or car == ' ' or car == '.'):
+            return False
+        if car.isupper():
+            if vino_mayus:
+                return False
+            vino_mayus = True
+        else:
+            vino_mayus = False
+    return validar_palabra(direccion)
+
 
 def extraer_datos(linea):
     cp = linea[0:9].strip()
@@ -21,24 +46,8 @@ def extraer_datos(linea):
     pago = int(linea[30].strip())
     return (cp, direccion, tipo, pago)
 
-
-def obtener_cp(linea):
-    cp, _, _, _ = extraer_datos(linea)
-    return cp
-
-
-def obtener_direccion(linea):
-    _, direccion, _, _ = extraer_datos(linea)
-    return direccion
-
-
-def obtener_tipo_pago(linea):
-    _, _, tipo, pago = extraer_datos(linea)
-    return tipo, pago
-
-
-def obtener_pais_cp(cp):
-    provincia = pais = ''
+def obtener_pais(cp):
+    provincia = ''
     if (len(cp) == 8
             and
             (cp[0].isalpha())
@@ -112,107 +121,145 @@ def obtener_pais_cp(cp):
         4].isdigit():
         pais = 'Uruguay'
         if cp[0] == '1':
-            montevideo = True
+            provincia = 'Montevideo'
     else:
         pais = 'Otro'
 
-    return provincia, pais
+    return pais, provincia
 
 
-def calcular_pago(tipo, pago, pais, montevideo, cp):
+def tipo_envio(tipo):
+    costo_envio = 0
     if tipo == 0:
-        importe_inicial = 1100
+        costo_envio = 1100
     elif tipo == 1:
-        importe_inicial = 1800
+        costo_envio = 1800
     elif tipo == 2:
-        importe_inicial = 2450
+        costo_envio = 2450
     elif tipo == 3:
-        importe_inicial = 8300
+        costo_envio = 8300
     elif tipo == 4:
-        importe_inicial = 10900
+        costo_envio = 10900
     elif tipo == 5:
-        importe_inicial = 14300
+        costo_envio = 14300
     elif tipo == 6:
-        importe_inicial = 17900
+        costo_envio = 17900
+    return costo_envio
+
+def tipo_carta(tipo):
+    if tipo == 0 or tipo == 1 or tipo == 2:
+        return 'Carta Simple'
+    if tipo == 3 or tipo == 4:
+        return 'Carta Certificada'
+    if tipo == 5 or tipo == 6:
+        return 'Carta Expresa'
+
+def calcular_precio(cp, tipo, pago):
+    importe_final = 0
+    costo_tipo = tipo_envio(tipo)
+    (pais,provincia) = obtener_pais(cp)
     if pais == 'Argentina':
-        importe_inicial += 0
-    elif pais == 'Bolivia' or pais == 'Paraguay' or (pais == 'Uruguay' and montevideo == True):
-        importe_inicial *= 1.2
-    elif pais == 'Chile' or (pais == 'Uruguay' and montevideo == False):
-        importe_inicial *= 1.25
+        importe_final = costo_tipo
+    elif pais == 'Bolivia' or pais == 'Paraguay' or (pais == 'Uruguay' and provincia == 'Montevideo'):
+        importe_final = costo_tipo * 1.2
+    elif pais == 'Chile' or (pais == 'Uruguay' and provincia != 'Montevideo'):
+        importe_final = costo_tipo * 1.25
     elif pais == 'Brasil' and (cp[0] == '8' or cp[0] == '9'):
-        importe_inicial *= 1.2
+        importe_final = costo_tipo * 1.2
     elif pais == 'Brasil' and (cp[0] == '0' or cp[0] == '1' or cp[0] == '2' or cp[0] == '3'):
-        importe_inicial *= 1.25
+        importe_final = costo_tipo * 1.25
     elif pais == 'Brasil' and (cp[0] == '4' or cp[0] == '5' or cp[0] == '6' or cp[0] == '7'):
-        importe_inicial *= 1.3
+        importe_final = costo_tipo * 1.3
     elif pais == 'Otro':
-        importe_inicial *= 1.5
-
+        importe_final = costo_tipo * 1.5
     if pago == 1:
-        importe_final = importe_inicial - (importe_inicial * 0.1)
+        importe_final = importe_final - (importe_final * 0.1)
     elif pago == 2:
-        importe_final = importe_inicial
-
-    return importe_final
-
-
-def validar_direccion_hc(direccion):
-    print(direccion)
-    vino_mayus = False
-    for car in direccion:
-        if not (car.isalpha() or car.isdigit() or car == ' ' or car == '.'):
-            return False
-        if car.isupper():
-            if vino_mayus:
-                return False
-            vino_mayus = True
-        else:
-            vino_mayus = False
-    return validar_palabra(direccion)
-
-
-def validar_palabra(direccion):
-    esnumero = False
-    for char in direccion:
-        if char.isdigit():
-            esnumero = True
-        elif char == ' ' or char == '.':
-            if esnumero:
-                return True
-            continue
-    return False
+        importe_final = importe_final
+    # Print de Control
+    print(f'Importe final: ${int(importe_final)}')
+    return int(importe_final)
 
 
 def principal():
-    archivo = open(ARCHIVO, encoding='UTF-8')
-    r2 = r3 = r4 = 0
+    # Acceso al archivo
+    archivo = open(ARCHIVO, encoding='utf-8')
+    r2 = r3 = r4 = r5 = r6 = r7 = r10 = r13 = 0
+    r8 = r12 = ''
+    r11 = None
+    # Lectura primer linea
     linea = archivo.readline()
+    # Quitando el salto de linea
     linea_sin_final(linea)
-    tipo_control = get_tipo_control(linea)
-    print(tipo_control)
-
+    # Asignamos a r1 la funcion que determina el tipo de control
+    r1 = get_tipo_control(linea)
+    # Respuesta 1
+    print(f'(r1) - Tipo de Control de direcciones: {r1}')
+    # Leemos la segunda linea
     linea = archivo.readline()
+    # Extraccion de datos de la 1er linea de envios
+    linea_1 = extraer_datos(linea)
+    # Extraer datos devuelve una tupla, y la posicion 0 corresponde al cp
+    r9 = linea_1[0]
+    # Recorremos linea por linea el archivo
     while linea != '':
-
+        # Quitamos el salto de linea por cada linea recorrida
         linea_sin_final(linea)
         (cp, direccion, tipo, pago) = extraer_datos(linea)
-        pais = obtener_pais_cp(cp)
+        pais, provincia = obtener_pais(cp)
+        precio_envio = calcular_precio(cp,tipo,pago)
         print(f'Código Postal: {cp} | Dirección: {direccion} | Tipo de Envío: {tipo} | Forma de Pago: {pago}')
-        if tipo_control == 'Hard Control':
-            if validar_direccion_hc(direccion):
+        print(f'País: {pais} | Provincia: {provincia}')
+        if cp == r9:
+            r10 += 1
+        if r1 == 'Hard Control':
+            if validar_direccion(direccion):
                 r2 += 1
-                r4 += calcular_pago(tipo, pago, pais, False, cp)
+                r4 += precio_envio
+                # Contador de tipos de carta
+                if tipo_carta(tipo) == 'Carta Simple':
+                    r5 += 1
+                elif tipo_carta(tipo) == 'Carta Certificada':
+                    r6 += 1
+                elif tipo_carta(tipo) == 'Carta Expresa':
+                    r7 += 1
             else:
-                print(f'Dirección inválida: {direccion}')
+                print(f'Dirección Inválida: {direccion}')
                 r3 += 1
-        if tipo_control == 'Soft Control':
+        if r1 == 'Soft Control':
             r2 += 1
-            r4 += calcular_pago(tipo, pago, pais, True, cp)
+            r4 += precio_envio
+            if tipo_carta(tipo) == 'Carta Simple':
+                r5 += 1
+            elif tipo_carta(tipo) == 'Carta Certificada':
+                r6 += 1
+            elif tipo_carta(tipo) == 'Carta Expresa':
+                r7 += 1
+        if pais == 'Brasil':
+            # defino el menor importe pagado para envios a Brasil
+            if r11 is None or precio_envio < r11:
+                r11 = precio_envio
+        # r12
+        if precio_envio == r11:
+            r12 = cp
         linea = archivo.readline()
-    print(f'Cantidad de direcciones válidas: {r2}')
-    print(f'Cantidad de direcciones inválidas: {r3}')
-    print(f'Total acumulado de importes finales: {r4}')
-
+    # Defino el tipo de carta con mayor envio
+    if r5 > r6 and r5 > r7:
+        r8 = 'Carta Simple'
+    elif r6 > r5 and r6 > r7:
+        r8 = 'Carta Certificada'
+    elif r7 > r5 and r7 > r6:
+        r8 = 'Carta Expresa'
+    print(f'(r2) - Cantidad de envíos con dirección válida: {r2}')
+    print(f'(r3) - Cantidad de envíos con dirección no válida: {r3}')
+    print(f'(r4) - Total acumulado de importes finales: {r4}')
+    print(f'(r5) - Cantidad de Cartas Simples: {r5}')
+    print(f'(r6) - Cantidad de Cartas Certificadas: {r6}')
+    print(f'(r7) - Cantidad de Cartas Expresas: {r7}')
+    print(f'(r8) - Tipo de carta con mayor cantidad de envios: {r8}')
+    print(f'(r9) - Código Postal del primer envío del archivo: {r9}')
+    print(f'(r10) - Cantidad de veces que entró ese primero: {r10}')
+    print(f'(r11) - Importe menor pagado por envios a Brasil: {r11}')
+    print(f'(r12) - Código Postal del Envio a Brasil con importe menor: {r12}')
 
 principal()
