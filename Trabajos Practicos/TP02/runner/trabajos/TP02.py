@@ -1,4 +1,4 @@
-ARCHIVO = 'envios100SC.txt'
+ARCHIVO = 'envios100HC.txt'
 
 
 def linea_sin_final(linea):
@@ -25,7 +25,7 @@ def validar_palabra(direccion):
     return False
 
 def validar_direccion(direccion):
-    print(direccion)
+    # print(direccion)
     vino_mayus = False
     for car in direccion:
         if not (car.isalpha() or car.isdigit() or car == ' ' or car == '.'):
@@ -177,13 +177,13 @@ def calcular_precio(cp, tipo, pago):
     elif pago == 2:
         importe_final = int(importe_final)
     # Print de Control
-    print(f'Importe final: ${int(importe_final)}')
+    # print(f'Importe final: ${int(importe_final)}')
     return int(importe_final)
 
 
 def principal():
     # Acceso al archivo
-    archivo = open(ARCHIVO, encoding='windows-1252')
+    archivo = open(ARCHIVO)
     cont_env_ext = cont_env = suma_precio_envio = cont_prov_bs_as = 0
     r2 = r3 = r4 = r5 = r6 = r7 = r10 = r13 = 0
     r8 = r12 = ''
@@ -209,8 +209,8 @@ def principal():
         (cp, direccion, tipo, pago) = extraer_datos(linea)
         pais, provincia = obtener_pais(cp)
         precio_envio = calcular_precio(cp,tipo,pago)
-        print(f'Código Postal: {cp} | Dirección: {direccion} | Tipo de Envío: {tipo} | Forma de Pago: {pago}')
-        print(f'País: {pais} | Provincia: {provincia}')
+        # print(f'Código Postal: {cp} | Dirección: {direccion} | Tipo de Envío: {tipo} | Forma de Pago: {pago}')
+        # print(f'País: {pais} | Provincia: {provincia}')
         if cp == r9:
             r10 += 1
         if r1 == 'Hard Control':
@@ -230,7 +230,7 @@ def principal():
                     cont_prov_bs_as += 1
                     suma_precio_envio += precio_envio
             else:
-                print(f'Dirección Inválida: {direccion}')
+                # print(f'Dirección Inválida: {direccion}')
                 r3 += 1
         if r1 == 'Soft Control':
             r2 += 1
@@ -244,8 +244,9 @@ def principal():
             if pais != 'Argentina':
                 cont_env_ext += 1
             if provincia == 'Provincia de Buenos Aires':
-                cont_prov_bs_as += 1
                 suma_precio_envio += precio_envio
+                cont_prov_bs_as += 1
+
 
         if pais == 'Brasil':
             # defino el menor importe pagado para envios a Brasil
@@ -264,7 +265,7 @@ def principal():
     elif r7 > r5 and r7 > r6:
         r8 = 'Carta Expresa'
     r13 = (cont_env_ext * 100) // cont_env
-    r14 = suma_precio_envio // cont_prov_bs_as
+    r14 = int(suma_precio_envio / cont_prov_bs_as)
     print(f'(r2) - Cantidad de envíos con dirección válida: {r2}')
     print(f'(r3) - Cantidad de envíos con dirección no válida: {r3}')
     print(f'(r4) - Total acumulado de importes finales: {r4}')
