@@ -1,4 +1,4 @@
-ARCHIVO = 'envios100SC.txt'
+ARCHIVO = 'envios500b.txt'
 
 
 def linea_sin_final(linea):
@@ -50,7 +50,7 @@ def obtener_pais(cp):
     provincia = ''
     if (len(cp) == 8
             and
-            (cp[0].isalpha())
+            (cp[0].isalpha() and cp[0].lower() not in {'i','o'})
             and
             (cp[1].isdigit() and cp[2].isdigit() and cp[3].isdigit() and cp[4].isdigit())
             and
@@ -198,7 +198,7 @@ def principal():
     print(f'(r1) - Tipo de Control de direcciones: {r1}')
     # Leemos la segunda linea
     linea = archivo.readline()
-    # Extraccion de datos de la 1er linea de envios
+    # Extraccion de datos de la 1er linea de envios(segunda linea)
     linea_1 = extraer_datos(linea)
     # Extraer datos devuelve una tupla, y la posicion 0 corresponde al cp
     r9 = linea_1[0]
@@ -211,6 +211,7 @@ def principal():
         precio_envio = calcular_precio(cp,tipo,pago)
         print(f'Código Postal: {cp} | Dirección: {direccion} | Tipo de Envío: {tipo} | Forma de Pago: {pago}')
         print(f'País: {pais} | Provincia: {provincia}')
+        cont_env += 1
         if cp == r9:
             r10 += 1
         if r1 == 'Hard Control':
@@ -251,10 +252,8 @@ def principal():
             # defino el menor importe pagado para envios a Brasil
             if r11 is None or precio_envio < r11:
                 r11 = precio_envio
-        # r12
-        if precio_envio == r11:
-            r12 = cp
-        cont_env += 1
+                # r12
+                r12 = cp
         linea = archivo.readline()
     # Defino el tipo de carta con mayor envio
     if r5 > r6 and r5 > r7:
@@ -278,5 +277,7 @@ def principal():
     print(f'(r12) - Código Postal del Envio a Brasil con importe menor: {r12}')
     print(f'(r13) - Porcentaje de envios al exterior sobre el total: {r13}')
     print(f'(r14) - Importe final promedio de los envios a Buenos Aires: {r14}')
+    print(cont_env_ext)
+    print(cont_env)
 
 principal()

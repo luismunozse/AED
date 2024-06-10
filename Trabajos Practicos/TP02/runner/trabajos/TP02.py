@@ -1,4 +1,4 @@
-ARCHIVO = 'envios100HC.txt'
+ARCHIVO = 'envios100SC.txt'
 
 
 def linea_sin_final(linea):
@@ -50,7 +50,7 @@ def obtener_pais(cp):
     provincia = ''
     if (len(cp) == 8
             and
-            (cp[0].isalpha())
+            (cp[0].isalpha() and cp[0].lower() not in {'i','o'})
             and
             (cp[1].isdigit() and cp[2].isdigit() and cp[3].isdigit() and cp[4].isdigit())
             and
@@ -252,9 +252,7 @@ def principal():
             # defino el menor importe pagado para envios a Brasil
             if r11 is None or precio_envio < r11:
                 r11 = precio_envio
-        # r12
-        if precio_envio == r11:
-            r12 = cp
+                r12 = cp
         cont_env += 1
         linea = archivo.readline()
     # Defino el tipo de carta con mayor envio
