@@ -1,11 +1,9 @@
 ARCHIVO = 'envios.txt'
 
-
 def linea_sin_final(linea):
     if linea[-1] == '\n':
         linea = linea[:-1]
     return linea
-
 
 def get_tipo_control(linea):
     if 'HC' in linea:
@@ -25,7 +23,6 @@ def validar_palabra(direccion):
     return False
 
 def validar_direccion(direccion):
-    # print(direccion)
     vino_mayus = False
     for car in direccion:
         if not (car.isalpha() or car.isdigit() or car == ' ' or car == '.'):
@@ -48,62 +45,73 @@ def extraer_datos(linea):
 
 def obtener_pais(cp):
     provincia = ''
+
+    arg_provs = ('Salta',
+                'Provincia de Buenos Aires',
+                'Ciudad Autónoma de Buenos Aires',
+                'San Luis',
+                'Entre Ríos',
+                'La Rioja',
+                'Santiago del Estero',
+                'Chaco',
+                'San Juan',
+                'Catamarca',
+                'La Pampa',
+                'Mendoza',
+                'Misiones',
+                'Formosa',
+                'Neuquén',
+                'Rio Negro',
+                'Santa Fe',
+                'Tucuman',
+                'Chubut',
+                'Tierra del Fuego',
+                'Corrientes',
+                'Córdoba',
+                'Jujuy',
+                'Santa Cruz')
+
+    abecedario = ('A',
+                'B',
+                'C',
+                'D',
+                'E',
+                'F',
+                'G',
+                'H',
+                'J',
+                'K',
+                'L',
+                'M',
+                'N',
+                'P',
+                'Q',
+                'R',
+                'S',
+                'T',
+                'U',
+                'V',
+                'W',
+                'X',
+                'Y',
+                'Z')
+
+
     if (len(cp) == 8
             and
-            (cp[0].isalpha() and cp[0].lower() not in {'i','o'})
+            (cp[0].isalpha() and cp[0].lower() not in {'i', 'o'})
             and
             (cp[1].isdigit() and cp[2].isdigit() and cp[3].isdigit() and cp[4].isdigit())
             and
             cp[5].isalpha() and cp[6].isalpha() and cp[7].isalpha()):
         pais = 'Argentina'
-        if cp[0] == 'A':
-            provincia = 'Salta'
-        elif cp[0] == 'B':
-            provincia = 'Provincia de Buenos Aires'
-        elif cp[0] == 'C':
-            provincia = 'Ciudad Autónoma de Buenos Aires'
-        elif cp[0] == 'D':
-            provincia = 'San Luis'
-        elif cp[0] == 'E':
-            provincia = 'Entre Ríos'
-        elif cp[0] == 'F':
-            provincia = 'La Rioja'
-        elif cp[0] == 'G':
-            provincia = 'Santiago del Estero'
-        elif cp[0] == 'H':
-            provincia = 'Chaco'
-        elif cp[0] == 'J':
-            provincia = 'San Juan'
-        elif cp[0] == 'K':
-            provincia = 'Catamarca'
-        elif cp[0] == 'L':
-            provincia = 'La Pampa'
-        elif cp[0] == 'M':
-            provincia = 'Mendoza'
-        elif cp[0] == 'N':
-            provincia = 'Misiones'
-        elif cp[0] == 'P':
-            provincia = 'Formosa'
-        elif cp[0] == 'Q':
-            provincia = 'Neuquén'
-        elif cp[0] == 'R':
-            provincia = 'Rio Negro'
-        elif cp[0] == 'S':
-            provincia = 'Santa Fe'
-        elif cp[0] == 'T':
-            provincia = 'Tucuman'
-        elif cp[0] == 'U':
-            provincia = 'Chubut'
-        elif cp[0] == 'V':
-            provincia = 'Tierra del Fuego'
-        elif cp[0] == 'W':
-            provincia = 'Corrientes'
-        elif cp[0] == 'X':
-            provincia = 'Córdoba'
-        elif cp[0] == 'Y':
-            provincia = 'Jujuy'
-        elif cp[0] == 'Z':
-            provincia = 'Santa Cruz'
+
+        for i in range(len(abecedario)):
+            letra = abecedario[i]
+            if cp[0] == letra:
+                provincia = arg_provs[i]
+                break
+
     elif len(cp) == 4 and cp[0].isdigit() and cp[1].isdigit() and cp[2].isdigit() and cp[3].isdigit():
         pais = 'Bolivia'
     elif len(cp) == 9 and cp[0].isdigit() and cp[1].isdigit() and cp[2].isdigit() and cp[3].isdigit() and cp[
@@ -176,32 +184,39 @@ def calcular_precio(cp, tipo, pago):
         importe_final = int(importe_final - (importe_final * 0.1))
     elif pago == 2:
         importe_final = int(importe_final)
-    # Print de Control
-    # print(f'Importe final: ${int(importe_final)}')
     return int(importe_final)
 
+def porc_envios_exteriores(cont_env_ext, cont_env):
+    if cont_env != 0:
+        porc = int((cont_env_ext * 100) / cont_env)
+        return porc
+    return 0
+
+def prom_envios_bs_as(suma, cont_bs_as):
+    if cont_bs_as != 0:
+        prom = int(suma / cont_bs_as)
+        return prom
+    return 0
 
 def principal():
     # Acceso al archivo
-    archivo = open(ARCHIVO)
+    archivo = open(ARCHIVO, encoding='windows-1252')
     cont_env_ext = cont_env = suma_precio_envio = cont_prov_bs_as = 0
-    r2 = r3 = r4 = r5 = r6 = r7 = r10 = r13 = 0
-    r8 = r12 = ''
-    r11 = None
+    cedvalid = cedinvalid = imp_acu_total = ccs = ccc = cce = cant_primer_cp = porc = 0
+    tipo_mayor = mencp = ''
+    menimp = None
     # Lectura primer linea
     linea = archivo.readline()
     # Quitando el salto de linea
     linea_sin_final(linea)
     # Asignamos a r1 la funcion que determina el tipo de control
-    r1 = get_tipo_control(linea)
-    # Respuesta 1
-    print(f'(r1) - Tipo de Control de direcciones: {r1}')
+    control = get_tipo_control(linea)
     # Leemos la segunda linea
     linea = archivo.readline()
-    # Extraccion de datos de la 1er linea de envios
+    # Extraccion de datos de la 1er linea de envios(segunda linea)
     linea_1 = extraer_datos(linea)
     # Extraer datos devuelve una tupla, y la posicion 0 corresponde al cp
-    r9 = linea_1[0]
+    primer_cp = linea_1[0]
     # Recorremos linea por linea el archivo
     while linea != '':
         # Quitamos el salto de linea por cada linea recorrida
@@ -209,73 +224,73 @@ def principal():
         (cp, direccion, tipo, pago) = extraer_datos(linea)
         pais, provincia = obtener_pais(cp)
         precio_envio = calcular_precio(cp,tipo,pago)
-        # print(f'Código Postal: {cp} | Dirección: {direccion} | Tipo de Envío: {tipo} | Forma de Pago: {pago}')
-        # print(f'País: {pais} | Provincia: {provincia}')
-        if cp == r9:
-            r10 += 1
-        if r1 == 'Hard Control':
+        cont_env += 1
+        if cp == primer_cp:
+            cant_primer_cp += 1
+        if control == 'Hard Control':
             if validar_direccion(direccion):
-                r2 += 1
-                r4 += precio_envio
+                cedvalid += 1
+                imp_acu_total += precio_envio
                 # Contador de tipos de carta
                 if tipo_carta(tipo) == 'Carta Simple':
-                    r5 += 1
+                    ccs += 1
                 elif tipo_carta(tipo) == 'Carta Certificada':
-                    r6 += 1
+                    ccc += 1
                 elif tipo_carta(tipo) == 'Carta Expresa':
-                    r7 += 1
+                    cce += 1
                 if pais != 'Argentina':
                     cont_env_ext += 1
                 if provincia == 'Provincia de Buenos Aires':
                     cont_prov_bs_as += 1
                     suma_precio_envio += precio_envio
             else:
-                # print(f'Dirección Inválida: {direccion}')
-                r3 += 1
-        if r1 == 'Soft Control':
-            r2 += 1
-            r4 += precio_envio
+                cedinvalid += 1
+        if control == 'Soft Control':
+            cedvalid += 1
+            imp_acu_total += precio_envio
             if tipo_carta(tipo) == 'Carta Simple':
-                r5 += 1
+                ccs += 1
             elif tipo_carta(tipo) == 'Carta Certificada':
-                r6 += 1
+                ccc += 1
             elif tipo_carta(tipo) == 'Carta Expresa':
-                r7 += 1
+                cce += 1
             if pais != 'Argentina':
                 cont_env_ext += 1
             if provincia == 'Provincia de Buenos Aires':
-                suma_precio_envio += precio_envio
                 cont_prov_bs_as += 1
-
+                suma_precio_envio += precio_envio
 
         if pais == 'Brasil':
             # defino el menor importe pagado para envios a Brasil
-            if r11 is None or precio_envio < r11:
-                r11 = precio_envio
-                r12 = cp
-        cont_env += 1
+            if menimp is None or precio_envio < menimp:
+                menimp = precio_envio
+                # r12
+                mencp = cp
         linea = archivo.readline()
     # Defino el tipo de carta con mayor envio
-    if r5 > r6 and r5 > r7:
-        r8 = 'Carta Simple'
-    elif r6 > r5 and r6 > r7:
-        r8 = 'Carta Certificada'
-    elif r7 > r5 and r7 > r6:
-        r8 = 'Carta Expresa'
-    r13 = (cont_env_ext * 100) // cont_env
-    r14 = int(suma_precio_envio / cont_prov_bs_as)
-    print(f'(r2) - Cantidad de envíos con dirección válida: {r2}')
-    print(f'(r3) - Cantidad de envíos con dirección no válida: {r3}')
-    print(f'(r4) - Total acumulado de importes finales: {r4}')
-    print(f'(r5) - Cantidad de Cartas Simples: {r5}')
-    print(f'(r6) - Cantidad de Cartas Certificadas: {r6}')
-    print(f'(r7) - Cantidad de Cartas Expresas: {r7}')
-    print(f'(r8) - Tipo de carta con mayor cantidad de envios: {r8}')
-    print(f'(r9) - Código Postal del primer envío del archivo: {r9}')
-    print(f'(r10) - Cantidad de veces que entró ese primero: {r10}')
-    print(f'(r11) - Importe menor pagado por envios a Brasil: {r11}')
-    print(f'(r12) - Código Postal del Envio a Brasil con importe menor: {r12}')
-    print(f'(r13) - Porcentaje de envios al exterior sobre el total: {r13}')
-    print(f'(r14) - Importe final promedio de los envios a Buenos Aires: {r14}')
+    if ccs > ccc and ccs > cce:
+        tipo_mayor = 'Carta Simple'
+    elif ccc > ccs and ccc > cce:
+        tipo_mayor = 'Carta Certificada'
+    elif cce > ccs and cce > ccc:
+        tipo_mayor = 'Carta Expresa'
+
+    porc = porc_envios_exteriores(cont_env_ext, cont_env)
+    prom = prom_envios_bs_as(suma_precio_envio, cont_prov_bs_as)
+
+    print(' (r1) - Tipo de control de direcciones:', control)
+    print(' (r2) - Cantidad de envios con direccion valida:', cedvalid)
+    print(' (r3) - Cantidad de envios con direccion no valida:', cedinvalid)
+    print(' (r4) - Total acumulado de importes finales:', imp_acu_total)
+    print(' (r5) - Cantidad de cartas simples:', ccs)
+    print(' (r6) - Cantidad de cartas certificadas:', ccc)
+    print(' (r7) - Cantidad de cartas expresas:', cce)
+    print(' (r8) - Tipo de carta con mayor cantidad de envios:', tipo_mayor)
+    print(' (r9) - Codigo postal del primer envio del archivo:', primer_cp)
+    print('(r10) - Cantidad de veces que entro ese primero:', cant_primer_cp)
+    print('(r11) - Importe menor pagado por envios a Brasil:', menimp)
+    print('(r12) - Codigo postal del envio a Brasil con importe menor:', mencp)
+    print('(r13) - Porcentaje de envios al exterior sobre el total:', porc)
+    print('(r14) - Importe final promedio de los envios a Buenos Aires:', prom)
 
 principal()

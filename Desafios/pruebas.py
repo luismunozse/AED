@@ -1,15 +1,15 @@
-__author__ = 'Cátedra de AED'
+__author__ = 'Catedra de AED'
 
 
-def triple(n):
-    t = 3 * n
+def ejemplo():
+    i = int(input('Ingrese un valor: '))
+    t = int(input('Ingrese otro: '))
+    if i > 3*t:
+        ok = True
 
-
-def test():
-    a = int(input('Ingrese un numero: '))
-    r = triple(a)
-    print('El triple del numero es:', r)
+    if ok:
+        print('El primer valor es mayor al triple del segundo...')
 
 
 # script principal
-test() 
+ejemplo()
