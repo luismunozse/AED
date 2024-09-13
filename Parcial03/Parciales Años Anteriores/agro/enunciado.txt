@@ -1,0 +1,27 @@
+2. (Parcial 2021) - Empresa Agropecuaria
+Se pide desarrollar un programa en Python para el enunciado que sigue. El programa obligatoriamente deberá plantearse como un proyecto que contenga al menos
+dos módulos (uno para la definición del tipo de registro y las funciones para gestionarlo (a criterio del estudiante) y otro módulo deberá contener el programa
+principal que obligatoriamente debe ser planteado en base a un menú de opciones y con funciones para toda situación posible.
+
+Una empresa agropecuaria necesita un programa para procesar los datos de los trabajos ofrecidos. Por cada trabajo se tienen los siguientes datos: el número de
+identificación, la descripción del trabajo, el tipo de trabajo (un número entero entre 0 y 19, para indicar por ejemplo: 0: siembra, 1: control de plagas, 2: cosecha, etc.),
+el importe a cobrar por ese trabajo y la cantidad de personal afectado al mismo. Se desea almacenar la información referida a estos trabajos en un arreglo de registros
+de tipo Trabajo (definir el tipo Trabajo y cargar n por teclado).
+
+Se pide desarrollar un programa en Python controlado por un menú de opciones y que posea como mínimo dos módulos, que permita gestionar las siguientes tareas:
+
+1-      Cargar el arreglo pedido con los datos de los n trabajos. Valide que el número identificador del trabajo sea positivo y que el tipo del servicio esté entre 0 y 19.
+Puede hacer la carga en forma manual, o puede generar los datos en forma automática (con valores aleatorios) o puede disponer de ambas técnicas si lo desea. Pero al menos
+una debe programar.
+
+2-      Mostrar todos los datos de todos los trabajos cuya cantidad de personal sea mayor a 3, en un listado ordenado de mayor a menor según los números de identificación
+de esos trabajos. Al final del listado, mostrar además la suma de los importes de todos los registros mostrados.
+
+3-      Determinar y mostrar la cantidad de trabajos que se ofrecen de cada tipo posible de (un contador para los trabajos tipo 0, otro para el tipo 1, etc.) En total, 20
+contadores. Muestre solo los resultados mayores a cero.
+
+4-      Mostrar los datos de todos los trabajos cuyo importe a cobrar sea mayor al importe promedio de todos los trabajos del arreglo
+
+5-      Determinar si existe un trabajo cuyo número de identificación sea igual a num y que sea del tipo t, siendo num y t dos valores que se cargan por teclado.
+Si existe, mostrar sus datos. Si no existe, informar con un mensaje. Si existe más de un registro que coincida con esos parámetros de búsqueda, debe mostrar sólo el
+primero que encuentre.

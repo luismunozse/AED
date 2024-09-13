@@ -2,17 +2,56 @@ from ticket import *
 import random
 
 
-def validar(n):
+def validar():
     n = int(input('Ingresar la cantidad de tickets a generar: '))
     while n <= 0:
         n = int(input('Incorrecto. Ingrese un numero valido: '))
+    return n
+
 
 def cargar_tickets():
-    n = validar(0)
+    n = validar()
     tickets = [None] * n
-    nombres = ('LT', 'AA', 'FB', 'JS', 'GOL')
     for i in range(n):
-        cod = random.choice(nombres) + '00' + str(i)
+        cod = 'Codigo: ' + str(i)
+        id = random.randint(1, 1000)
+        pais = random.randint(1, 20)
+        but = random.randint(1, 100)
+        imp = round(random.uniform(0, 100000),2)
+        tickets[i] = Ticket(cod, id, pais, but, imp)
+    print('Tickets generados...')
+    return tickets
+
+
+def ordenar_tickets(tickets):
+    n = len(tickets)
+    for i in range(n - 1):
+        for j in range(i + 1, n):
+            if tickets[i].codigo_vuelo > tickets[j].codigo_vuelo:
+                tickets[i], tickets[j] = tickets[j], tickets[i]
+
+
+def mostrar_tickets(tickets):
+    num = int(input('Ingrese un numero: '))
+    ordenar_tickets(tickets)
+    print(ordenar_tickets(tickets))
+    for ticket in tickets:
+        if ticket.nro_asiento > num:
+            print(ticket)
+    print('No existen nros de asientos mayores al numero ingresado')
+
+
+def importe_acumulado(tickets):
+    t = int(input('Ingrese un numero (entre 1 y 20): '))
+    n = len(tickets)
+    cont = [0] * 20
+    acu = 0
+    for i in range(n):
+        pos = tickets[i].pais_destino - 1
+        cont[pos] += tickets[i].importe
+    for j in range(20):
+        if cont[j] > t:
+            print(f'Pais de destino: {j+1} Importe acumulado: ${cont[j]}')
 
 
 def principal():
@@ -28,9 +67,11 @@ def principal():
         print('5 - Salir ')
         opcion = int(input('Seleccione una opcion: '))
         if opcion == 1:
-            pass
+            tickets = cargar_tickets()
         if opcion == 2:
-            pass
+            mostrar_tickets(tickets)
+        if opcion == 3:
+            importe_acumulado(tickets)
 
 
 if __name__ == '__main__':
