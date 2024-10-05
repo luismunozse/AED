@@ -11,4 +11,4 @@ class Ticket:
             ' Id de pasajero: ' + str(self.identificador_pasajero) + \
             ' Pais de destino: ' + str(self.pais_destino) + \
             ' Nro de asiento: ' + str(self.nro_asiento) + \
-            ' Importe Pagado: ' + str(self.importe)
+            ' Importe Pagado: $' + str(self.importe)

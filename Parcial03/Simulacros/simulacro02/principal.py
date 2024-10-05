@@ -54,6 +54,16 @@ def importe_acumulado(tickets):
             print(f'Pais de destino: {j+1} Importe acumulado: ${cont[j]}')
 
 
+def buscar_ticket(tickets):
+    n = len(tickets)
+    id = int(input('Ingrese el numero de identificacion: '))
+    for i in range(n):
+        if tickets[i].identificador_pasajero == id:
+            print(f'Ticket encontrado: {tickets[i]}')
+            return
+    print('No se encuentran coincidencias con la busqueda')
+
+
 def principal():
     tickets = []
     opcion = -1
@@ -72,7 +82,10 @@ def principal():
             mostrar_tickets(tickets)
         if opcion == 3:
             importe_acumulado(tickets)
-
+        if opcion == 4:
+            buscar_ticket(tickets)
+        if opcion == 5:
+            print('Gracias por usar el programa')
 
 if __name__ == '__main__':
     principal()
