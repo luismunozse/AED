@@ -35,11 +35,23 @@ def mostrar_archivo_binario(fb):
 
     print('Listado General de envios...')
 
+    c = 0
+    m = open(fb, 'rb')
 
+    while m.tell() < os.path.getsize(fb):
+        env = pickle.load(m)
+        print(env)
+        c += 1
+    m.close()
+    print('Se listaron', c, 'registros')
 
 
 def principal():
-    pass
+    ft = 'envios-tp4.csv'
+    fb = 'envios-tp4.dat'
+    crear_archivo_binario(ft,fb)
+    print('Terminado...')
+    mostrar_archivo_binario(fb)
 
 
 if __name__ == '__main__':
