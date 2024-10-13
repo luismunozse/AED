@@ -131,23 +131,55 @@ def contar_envios_por_tipo_pago(fb):
         matriz_conteo[tipo][pago] += 1
 
     m.close()
+    return matriz_conteo
 
-    print('Cantidad de envios por combinacion de tipo de envio y forma de pago: ')
-    for tipo in range(7):
-        for pago in range(2):
+
+def mostrar_conteo_combinado(matriz_conteo):
+    for pago in range(2):
+        print(f'Forma de Pago {pago + 1}')
+        if pago == 0:
+            print('***(Pagos en efectivo)***')
+        if pago == 1:
+            print('***(Pagos con tarjeta)***')
+        for tipo in range(7):
             if matriz_conteo[tipo][pago] > 0:
-                print(f'Tipo de Envio: {tipo} | Forma de Pago: {pago + 1} | Cantidad: {matriz_conteo[tipo][pago]} envíos')
+                print(f'Tipo de Envío: {tipo} | Cantidad: {matriz_conteo[tipo][pago]} envíos')
+        print()
+
+
+def total_por_tipo_envio(matriz_conteo):
+    print('Total de envíos por tipo de envio: ')
+    for tipo in range(7):
+        total = 0
+        for pago in range(2):
+            total += matriz_conteo[tipo][pago]
+            if pago == 1:
+                print(f'Tipo de Envío: {tipo} - Total: {total} envíos')
+            if pago == 2:
+                print(f'Tipo de Envío: {tipo} - Total: {total} envíos')
+
+
+def total_por_forma_pago(matriz_conteo):
+    print('Total de envíos por forma de pago: ')
+    for pago in range(2):
+        total = 0
+        for tipo in range(7):
+            total += matriz_conteo[tipo][pago]
+        print(f'Forma de Pago: {pago + 1} - Total: {total} envíos')
 
 
 def principal():
     ft = 'envios-tp4.csv'
     fb = 'envios-tp4.dat'
+    matriz_conteo = contar_envios_por_tipo_pago(fb)
 
     opcion = -1
 
     while opcion != 9:
 
-        print('Menú de Opciones: ')
+        print('Sistema de Gestión de Envíos por Correo v4.0')
+        print('¡Bienvenido!')
+        print('Seleccione una opción: ')
         print('************************')
         print('1 - Crear archivo binario')
         print('2 - Cargar por teclado los datos de un envio')
@@ -179,7 +211,14 @@ def principal():
         elif opcion == 5:
             buscar_direccion(fb)
         elif opcion == 6:
-            contar_envios_por_tipo_pago(fb)
+            mostrar_conteo_combinado(matriz_conteo)
+        elif opcion == 7:
+            total_por_forma_pago(matriz_conteo)
+            total_por_tipo_envio(matriz_conteo)
+        elif opcion == 8:
+            pass
+        elif opcion == 9:
+            print('Gracias por utilizar nuestro software. Vuelva pronto')
 
 
 if __name__ == '__main__':
