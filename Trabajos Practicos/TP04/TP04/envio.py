@@ -7,23 +7,9 @@ class Envio:
 
     def __str__(self):
         return 'Código Postal: ' + self.codigo_postal + \
-            'Dirección: ' + self.direccion + \
-            'Tipo de Envío: ' + str(self.tipo_envio) + \
-            'Forma de Pago: ' + str(self.forma_pago)
-
-
-def crear_envio():
-    cp = input('Ingrese código postal: ')
-    dire = input('Ingrese dirección: ')
-    tipo = int(input('Ingrese el tipo de envío: '))
-    while tipo not in [0, 1, 2, 3, 4, 5, 6]:
-        print("Ingrese un número entre 0 y 6:")
-        tipo = int(input('Ingrese el tipo de envío: '))
-    pago = int(input('Ingrese el tipo de pago: '))
-    while pago not in [1, 2]:
-        print("Ingrese 1 o 2 (efectivo o tarjeta):")
-        pago = int(input('Ingrese el tipo de envío: '))
-    return Envio(cp, dire, tipo, pago)
+            ' | Dirección: ' + self.direccion + \
+            ' | Tipo de Envío: ' + str(self.tipo_envio) + \
+            ' | Forma de Pago: ' + str(self.forma_pago)
 
 
 def crear_envio_from_txt(linea):
