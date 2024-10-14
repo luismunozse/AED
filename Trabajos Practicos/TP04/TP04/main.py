@@ -176,7 +176,7 @@ def calcular_promedio(fb):
         print('No hay envios para calcular el promedio')
         return
     promedio = importe_total / cantidad_envios
-    print(f'El importe promedio entre todos los envios es: {round(promedio,2)}')
+    print(f'El importe promedio entre todos los envios es: ${round(promedio,2)}')
     return promedio
 
 
@@ -193,10 +193,25 @@ def generar_arreglo(fb, promedio):
     return envios
 
 
+def shell_sort(envios):
+    n = len(envios)
+    h = n//2
+    while h > 0:
+        for i in range(h, n):
+            temp = envios[i]
+            j = i
+            while j >= h and envios[j-h].codigo_postal > temp.codigo_postal:
+                envios[j] = envios[j-h]
+                j -= h
+            envios[j] = temp
+        h = h // 2
+
+
 def principal():
     ft = 'envios-tp4.csv'
     fb = 'envios-tp4.dat'
     matriz_conteo = contar_envios_por_tipo_pago(fb)
+    cont_envios = 0
 
     opcion = -1
 
@@ -212,8 +227,8 @@ def principal():
         print('4 - Buscar por Código Postal')
         print('5 - Buscar por Dirección')
         print('6 - Mostrar cantidad de envios por tipo de envio y forma de pago')
-        print('7 -  ')
-        print('8 - ')
+        print('7 - Mostrar cantidad de envios totales por tipo de envio y forma de pago')
+        print('8 - Mostrar el promedio y envios superiores al promedio')
         print('9 - Salir')
         print()
 
@@ -241,7 +256,18 @@ def principal():
             total_por_forma_pago(matriz_conteo)
             total_por_tipo_envio(matriz_conteo)
         elif opcion == 8:
-            calcular_promedio(fb)
+            promedio = calcular_promedio(fb)
+            if promedio is not None:
+                envios = generar_arreglo(fb, promedio)
+                if envios:
+                    shell_sort(envios)
+                    print('Envios cuyo importe es mayor al promedio, ordenados por codigo postal: ')
+                    for envio in envios:
+                        cont_envios += 1
+                        print(envio)
+                else:
+                    print('No se encontraron envios con importe mayor al promedio')
+                print(f'Se registraron {cont_envios} envios')
         elif opcion == 9:
             print('Gracias por utilizar nuestro software. Vuelva pronto')
 
