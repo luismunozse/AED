@@ -27,11 +27,15 @@ def crear_archivo_binario(ft, fb):
     m.close()
 
 
-def mostrar_archivo_binario(fb):
+def validar_archivo_binario(fb):
     if not os.path.exists(fb):
         print(f'El archivo {fb} no existe')
         print('Controle y vuelva por aqui')
         return
+
+
+def mostrar_archivo_binario(fb):
+    validar_archivo_binario(fb)
 
     print('Listado General de envios...')
 
@@ -48,10 +52,7 @@ def mostrar_archivo_binario(fb):
 
 
 def crear_envio(fb):
-    if not os.path.exists(fb):
-        print(f'El archivo {fb} no existe')
-        print('Controle y vuelva por aqui')
-        return
+    validar_archivo_binario(fb)
     cp = input('Ingrese el código postal: ')
     dire = input('Ingrese dirección: ')
     tipo = int(input('Ingrese el tipo de envío: '))
@@ -68,10 +69,7 @@ def crear_envio(fb):
 
 
 def buscar_cp(fb):
-    if not os.path.exists(fb):
-        print(f'El archivo {fb} no existe')
-        print('Controle y vuelva por aqui')
-        return
+    validar_archivo_binario(fb)
     cp = input('Ingrese el CP a buscar: ')
     c = 0
     m = open(fb, 'rb')
@@ -89,10 +87,7 @@ def buscar_cp(fb):
 
 
 def buscar_direccion(fb):
-    if not os.path.exists(fb):
-        print(f'El archivo {fb} no existe')
-        print('Controle y vuelva por aqui')
-        return
+    validar_archivo_binario(fb)
 
     d = input('Ingrese la dirección a buscar: ')
 
@@ -114,10 +109,7 @@ def buscar_direccion(fb):
 
 
 def contar_envios_por_tipo_pago(fb):
-    if not os.path.exists(fb):
-        print(f'El archivo {fb} no existe')
-        print('Controle y vuelva por aqui')
-        return
+    validar_archivo_binario(fb)
 
     tipo, pago = 7, 2
     matriz_conteo = [[0]*pago for f in range(tipo)]
@@ -168,6 +160,39 @@ def total_por_forma_pago(matriz_conteo):
         print(f'Forma de Pago: {pago + 1} - Total: {total} envíos')
 
 
+def calcular_promedio(fb):
+    validar_archivo_binario(fb)
+    m = open(fb, 'rb')
+    importe_total = 0
+    cantidad_envios = 0
+    while m.tell() < os.path.getsize(fb):
+        env = pickle.load(m)
+        pais = obtener_pais(env.codigo_postal)
+        precio = calcular_precio_envio(env.codigo_postal, pais, int(env.tipo_envio), int(env.forma_pago))
+        importe_total += precio
+        cantidad_envios += 1
+    m.close()
+    if cantidad_envios == 0:
+        print('No hay envios para calcular el promedio')
+        return
+    promedio = importe_total / cantidad_envios
+    print(f'El importe promedio entre todos los envios es: {round(promedio,2)}')
+    return promedio
+
+
+def generar_arreglo(fb, promedio):
+    validar_archivo_binario(fb)
+    envios = []
+    m = open(fb, 'rb')
+    while m.tell() < os.path.getsize(fb):
+        env = pickle.load(m)
+        pais = obtener_pais(env.codigo_postal)
+        precio = calcular_precio_envio(env.codigo_postal, pais, int(env.tipo_envio), int(env.forma_pago))
+        if precio > promedio:
+            envios.append(env)
+    return envios
+
+
 def principal():
     ft = 'envios-tp4.csv'
     fb = 'envios-tp4.dat'
@@ -216,7 +241,7 @@ def principal():
             total_por_forma_pago(matriz_conteo)
             total_por_tipo_envio(matriz_conteo)
         elif opcion == 8:
-            pass
+            calcular_promedio(fb)
         elif opcion == 9:
             print('Gracias por utilizar nuestro software. Vuelva pronto')
 

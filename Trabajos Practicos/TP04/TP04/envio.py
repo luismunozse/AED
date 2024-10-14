@@ -71,24 +71,3 @@ def calcular_precio_envio(cp,pais,tipo,pago):
     return precio_final
 
 
-def validar_direccion(direccion):
-    cl = cd = 0
-    td = False
-    ant = " "
-    for car in direccion:
-        if car in " .":
-            if cl == cd:
-                td = True
-            cl = cd = 0
-            ant = " "
-        else:
-            cl += 1
-            if not car.isdigit() and not car.isalpha():
-                return False
-            if ant.isupper() and car.isupper():
-                return False
-            if car.isdigit():
-                cd += 1
-            ant = car
-
-    return td
